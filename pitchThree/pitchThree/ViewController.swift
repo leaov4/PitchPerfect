@@ -1,3 +1,4 @@
+
 //
 //  ViewController.swift
 //  pitchThree
@@ -12,9 +13,11 @@ import AVFoundation
 class ViewController: UIViewController, AVAudioRecorderDelegate {
     
     @IBOutlet weak var recordButton: UIButton!
-
+    
     var recordingSession: AVAudioSession!
     var audioRecorder: AVAudioRecorder!
+    
+    var data: URL?
     
     func startRecording() {
         print("Start Recording")
@@ -61,10 +64,26 @@ class ViewController: UIViewController, AVAudioRecorderDelegate {
         print("Load Recording")
     }
     
+    @IBOutlet weak var stopButton: UIButton!
+    
     func finishRecording(success: Bool) {
         audioRecorder.stop()
         audioRecorder = nil
         print("Success Finish Recording")
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?){
+        finishRecording(success: true)
+        if segue.identifier == "stopRecording"{
+            let pitchVC:playViewController = segue.destination as! playViewController
+            pitchVC.recievedAudio = data
+        }
+    }
+
+    @IBOutlet weak var stopRecording: UIButton!
+    
+    @IBAction func stopRecording(_ sender: Any) {
+        performSegue(withIdentifier: "stopRecording", sender: stopButton)
     }
     
     override func viewDidLoad() {
